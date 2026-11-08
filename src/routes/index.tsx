@@ -71,7 +71,9 @@ function Index() {
             </p>
             <div className="upsell-price">R$19,90</div>
             <div className="upsell-note">total especial (em vez de R$27,90)</div>
-            <a className="btn btn-cta btn-block" href={CHECKOUT.upsell}>
+            <a className="btn btn-cta btn-block" href={CHECKOUT.upsell}
+              onClick={() => (window as unknown as { fbq?: (...a: string[]) => void }).fbq?.("track", "Lead")}
+            >
               SIM, QUERO O PREMIUM POR R$19,90
             </a>
             <a className="upsell-no" href={CHECKOUT.basic}>
