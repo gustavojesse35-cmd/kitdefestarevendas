@@ -19,6 +19,8 @@ export const Route = createFileRoute("/")({
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { property: "og:image", content: "https://kitdefestarevenda.lovable.app/__l5e/assets-v1/c711471b-4bb7-43a3-8dbf-43428a5e89fe/moldes_catalogo_hero.png" },
+      { name: "twitter:image", content: "https://kitdefestarevenda.lovable.app/__l5e/assets-v1/c711471b-4bb7-43a3-8dbf-43428a5e89fe/moldes_catalogo_hero.png" },
     ],
     links: [
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
