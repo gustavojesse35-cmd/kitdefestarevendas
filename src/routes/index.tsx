@@ -1,23 +1,18 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import landingHtml from "../landing.html?raw";
-
-const CHECKOUT = {
-  premium: "https://pay.cakto.com.br/o3a8rkf_1293052",
-  upsell: "https://pay.cakto.com.br/fnfvx3m",
-  basic: "https://pay.cakto.com.br/369xz4r",
-};
+import { CHECKOUT, MOLD_COUNT_LABEL } from "@/lib/offers";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "2.500 Moldes de Festas Infantis para Revender" },
+      { title: `${MOLD_COUNT_LABEL} Moldes de Festas Infantis para Revender` },
       {
         name: "description",
         content:
-          "Receba mais de 2.500 moldes de festas infantis prontos para revender pelo celular. Acesso imediato e garantia de 7 dias.",
+          `Receba mais de ${MOLD_COUNT_LABEL} moldes de festas infantis prontos para revender pelo celular. Acesso imediato e garantia de 7 dias.`,
       },
-      { property: "og:title", content: "2.500 Moldes de Festas Infantis para Revender" },
+      { property: "og:title", content: `${MOLD_COUNT_LABEL} Moldes de Festas Infantis para Revender` },
       {
         property: "og:description",
         content: "Venda kits de festas infantis pelo celular com arquivos prontos para personalizar.",
@@ -44,13 +39,21 @@ function Index() {
     <>
       <div
         onClick={(e) => {
-          const el = (e.target as HTMLElement).closest("[data-offer]");
+          const el = (e.target as HTMLElement).closest("[data-offer], a[href='#oferta-premium']");
           if (!el) return;
+          if (el.getAttribute("href") === "#oferta-premium") {
+            e.preventDefault();
+            document.getElementById("oferta-premium")?.scrollIntoView({
+              behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth",
+              block: "start",
+            });
+            return;
+          }
           const offer = el.getAttribute("data-offer");
           if (offer === "basic") setUpsell(true);
           if (offer === "premium") window.location.href = CHECKOUT.premium;
         }}
-        dangerouslySetInnerHTML={{ __html: landingHtml }}
+        dangerouslySetInnerHTML={{ __html: landingHtml.replaceAll("{{MOLD_COUNT}}", MOLD_COUNT_LABEL) }}
       />
       {upsell && (
         <div className="upsell-overlay" onClick={() => setUpsell(false)}>
