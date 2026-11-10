@@ -1,29 +1,26 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import landingHtml from "../landing.html?raw";
-
-const CHECKOUT = {
-  premium: "https://pay.cakto.com.br/o3a8rkf_1293052",
-  upsell: "https://pay.cakto.com.br/fnfvx3m",
-  basic: "https://pay.cakto.com.br/369xz4r",
-};
+import { CHECKOUT, MOLD_COUNT_LABEL } from "@/lib/offers";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "2.500 Moldes de Festas Infantis para Revender" },
+      { title: `${MOLD_COUNT_LABEL} Moldes de Festas Infantis para Revender` },
       {
         name: "description",
         content:
-          "Receba mais de 2.500 moldes de festas infantis prontos para revender pelo celular. Acesso imediato e garantia de 7 dias.",
+          `Receba mais de ${MOLD_COUNT_LABEL} moldes de festas infantis prontos para revender pelo celular. Acesso imediato e garantia de 7 dias.`,
       },
-      { property: "og:title", content: "2.500 Moldes de Festas Infantis para Revender" },
+      { property: "og:title", content: `${MOLD_COUNT_LABEL} Moldes de Festas Infantis para Revender` },
       {
         property: "og:description",
         content: "Venda kits de festas infantis pelo celular com arquivos prontos para personalizar.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { property: "og:image", content: "https://kitdefestarevenda.lovable.app/__l5e/assets-v1/c711471b-4bb7-43a3-8dbf-43428a5e89fe/moldes_catalogo_hero.png" },
+      { name: "twitter:image", content: "https://kitdefestarevenda.lovable.app/__l5e/assets-v1/c711471b-4bb7-43a3-8dbf-43428a5e89fe/moldes_catalogo_hero.png" },
     ],
     links: [
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -43,14 +40,34 @@ function Index() {
   return (
     <>
       <div
-        onClick={(e) => {
-          const el = (e.target as HTMLElement).closest("[data-offer]");
+        onClick={async (e) => {
+          const el = (e.target as HTMLElement).closest("[data-offer], a[href='#oferta-premium']");
           if (!el) return;
+          if (el.getAttribute("href") === "#oferta-premium") {
+            e.preventDefault();
+            const target = document.getElementById("oferta-premium");
+            if (!target) return;
+            // Resolve earlier lazy images before measuring the offer's final position.
+            const precedingImages = Array.from(document.querySelectorAll<HTMLImageElement>("main img"))
+              .filter((image) => image.compareDocumentPosition(target) & Node.DOCUMENT_POSITION_FOLLOWING);
+            await Promise.all(precedingImages.map(async (image) => {
+              image.loading = "eager";
+              await Promise.race([
+                image.decode().catch(() => undefined),
+                new Promise<void>((resolve) => window.setTimeout(resolve, 3000)),
+              ]);
+            }));
+            target.scrollIntoView({
+              behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth",
+              block: "start",
+            });
+            return;
+          }
           const offer = el.getAttribute("data-offer");
           if (offer === "basic") setUpsell(true);
           if (offer === "premium") window.location.href = CHECKOUT.premium;
         }}
-        dangerouslySetInnerHTML={{ __html: landingHtml }}
+        dangerouslySetInnerHTML={{ __html: landingHtml.replaceAll("{{MOLD_COUNT}}", MOLD_COUNT_LABEL) }}
       />
       {upsell && (
         <div className="upsell-overlay" onClick={() => setUpsell(false)}>

@@ -1,0 +1,4 @@
+- [x] Atualizar a quantidade de moldes para 15.000 em toda a página.
+- [x] Corrigir os CTAs para a oferta Premium de R$27,90.
+- [x] Restaurar imagens e apresentação dos bônus da página original.
+- [x] Verificar os botões e os bônus no celular e computador.

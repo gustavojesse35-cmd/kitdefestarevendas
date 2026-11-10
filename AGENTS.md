@@ -28,3 +28,6 @@ use the editor.
   own key and store it in Secrets.
 - **Secrets.** Lovable manages them. Do not put secret values in the repo.
 <!-- LOVABLE:END -->
+
+- Keep product quantity and checkout destinations in `src/lib/offers.ts`; render the raw landing template's quantity placeholders from that configuration to prevent offer drift.
+- Store imported bonus images as Lovable asset pointers and use their returned URLs in the landing template to avoid dependence on another site's hosting.
