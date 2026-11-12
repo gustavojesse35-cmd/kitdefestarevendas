@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { captureUtms, checkoutUrl } from "@/lib/utm";
 import landingHtml from "../landing.html?raw";
 import { CHECKOUT, MOLD_COUNT_LABEL } from "@/lib/offers";
 
@@ -37,6 +38,9 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   const [upsell, setUpsell] = useState(false);
+  useEffect(() => {
+    captureUtms();
+  }, []);
   return (
     <>
       <div
@@ -65,7 +69,7 @@ function Index() {
           }
           const offer = el.getAttribute("data-offer");
           if (offer === "basic") setUpsell(true);
-          if (offer === "premium") window.location.href = CHECKOUT.premium;
+          if (offer === "premium") window.location.href = checkoutUrl(CHECKOUT.premium);
         }}
         dangerouslySetInnerHTML={{ __html: landingHtml.replaceAll("{{MOLD_COUNT}}", MOLD_COUNT_LABEL) }}
       />
@@ -88,12 +92,12 @@ function Index() {
             </p>
             <div className="upsell-price">R$19,90</div>
             <div className="upsell-note">total especial (em vez de R$27,90)</div>
-            <a className="btn btn-cta btn-block" href={CHECKOUT.upsell}
+            <a className="btn btn-cta btn-block" href={checkoutUrl(CHECKOUT.upsell)}
               onClick={() => (window as unknown as { fbq?: (...a: string[]) => void }).fbq?.("track", "Lead")}
             >
               SIM, QUERO O PREMIUM POR R$19,90
             </a>
-            <a className="upsell-no" href={CHECKOUT.basic}>
+            <a className="upsell-no" href={checkoutUrl(CHECKOUT.basic)}>
               Não, quero continuar com o Básico por R$10,00
             </a>
           </div>
