@@ -31,3 +31,4 @@ use the editor.
 
 - Keep product quantity and checkout destinations in `src/lib/offers.ts`; render the raw landing template's quantity placeholders from that configuration to prevent offer drift.
 - Store imported bonus images as Lovable asset pointers and use their returned URLs in the landing template to avoid dependence on another site's hosting.
+- Detect checkout returns using a consumed session marker on mount and pageshow; mark every checkout departure so browser back-cache restores and full reloads share the same offer flow without changing tracking events.

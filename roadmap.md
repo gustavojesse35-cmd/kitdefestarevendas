@@ -2,3 +2,5 @@
 - [x] Corrigir os CTAs para a oferta Premium de R$27,90.
 - [x] Restaurar imagens e apresentação dos bônus da página original.
 - [x] Verificar os botões e os bônus no celular e computador.
+- [x] Mostrar Premium por R$15,90 ao voltar do checkout e por R$10,00 ao recusar.
+- [x] Testar retorno, recusa e UTMs dos links de compra.

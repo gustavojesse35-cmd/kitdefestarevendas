@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 import { captureUtms, checkoutUrl } from "@/lib/utm";
 import landingHtml from "../landing.html?raw";
 import { CHECKOUT, MOLD_COUNT_LABEL } from "@/lib/offers";
+import { CheckoutReturnOffer } from "@/components/checkout-return-offer";
+import { consumeCheckoutReturn, declineReturnOffer, markCheckoutDeparture, type ReturnOffer } from "@/lib/checkout-return";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -38,8 +40,18 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   const [upsell, setUpsell] = useState(false);
+  const [returnOffer, setReturnOffer] = useState<ReturnOffer>(null);
   useEffect(() => {
     captureUtms();
+    const checkReturn = () => {
+      if (consumeCheckoutReturn(window.sessionStorage)) {
+        setUpsell(false);
+        setReturnOffer("return");
+      }
+    };
+    checkReturn();
+    window.addEventListener("pageshow", checkReturn);
+    return () => window.removeEventListener("pageshow", checkReturn);
   }, []);
   return (
     <>
@@ -69,7 +81,11 @@ function Index() {
           }
           const offer = el.getAttribute("data-offer");
           if (offer === "basic") setUpsell(true);
-          if (offer === "premium") window.location.href = checkoutUrl(CHECKOUT.premium);
+          if (offer === "premium") {
+            e.preventDefault();
+            markCheckoutDeparture(window.sessionStorage);
+            window.location.href = checkoutUrl(CHECKOUT.premium);
+          }
         }}
         dangerouslySetInnerHTML={{ __html: landingHtml.replaceAll("{{MOLD_COUNT}}", MOLD_COUNT_LABEL) }}
       />
@@ -93,16 +109,20 @@ function Index() {
             <div className="upsell-price">R$19,90</div>
             <div className="upsell-note">total especial (em vez de R$27,90)</div>
             <a className="btn btn-cta btn-block" href={checkoutUrl(CHECKOUT.upsell)}
-              onClick={() => (window as unknown as { fbq?: (...a: string[]) => void }).fbq?.("track", "Lead")}
+              onClick={() => {
+                markCheckoutDeparture(window.sessionStorage);
+                (window as unknown as { fbq?: (...a: string[]) => void }).fbq?.("track", "Lead");
+              }}
             >
               SIM, QUERO O PREMIUM POR R$19,90
             </a>
-            <a className="upsell-no" href={checkoutUrl(CHECKOUT.basic)}>
+            <a className="upsell-no" href={checkoutUrl(CHECKOUT.basic)} onClick={() => markCheckoutDeparture(window.sessionStorage)}>
               Não, quero continuar com o Básico por R$10,00
             </a>
           </div>
         </div>
       )}
+      <CheckoutReturnOffer offer={returnOffer} onDecline={() => setReturnOffer(declineReturnOffer)} />
     </>
   );
 }
