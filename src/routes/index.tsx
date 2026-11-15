@@ -61,7 +61,7 @@ function Index() {
           if (!el) return;
           if (el.getAttribute("href") === "#oferta-premium") {
             e.preventDefault();
-            const target = document.getElementById("oferta-premium");
+            const target = document.getElementById("planos");
             if (!target) return;
             target.scrollIntoView({
               behavior: "instant",
