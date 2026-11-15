@@ -67,6 +67,11 @@ function Index() {
               behavior: "instant",
               block: "start",
             });
+            const btn = document.querySelector("#oferta-premium .btn");
+            if (btn) {
+              const overflow = btn.getBoundingClientRect().bottom - window.innerHeight;
+              if (overflow > 0) window.scrollBy({ top: overflow + 16, behavior: "instant" });
+            }
             return;
           }
           const offer = el.getAttribute("data-offer");
