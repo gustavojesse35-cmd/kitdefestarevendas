@@ -59,7 +59,7 @@ function Index() {
         onClick={async (e) => {
           const el = (e.target as HTMLElement).closest("[data-offer], a[href='#oferta-premium']");
           if (!el) return;
-          if (el.getAttribute("href") === "#oferta-premium" && !el.hasAttribute("data-offer")) {
+          if (el.getAttribute("href") === "#oferta-premium") {
             e.preventDefault();
             const target = document.getElementById("oferta-premium");
             if (!target) return;
