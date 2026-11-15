@@ -56,25 +56,15 @@ function Index() {
   return (
     <>
       <div
-        onClick={async (e) => {
+        onClick={(e) => {
           const el = (e.target as HTMLElement).closest("[data-offer], a[href='#oferta-premium']");
           if (!el) return;
           if (el.getAttribute("href") === "#oferta-premium") {
             e.preventDefault();
-            const target = document.getElementById("oferta-premium");
+            const target = document.getElementById("planos");
             if (!target) return;
-            // Resolve earlier lazy images before measuring the offer's final position.
-            const precedingImages = Array.from(document.querySelectorAll<HTMLImageElement>("main img"))
-              .filter((image) => image.compareDocumentPosition(target) & Node.DOCUMENT_POSITION_FOLLOWING);
-            await Promise.all(precedingImages.map(async (image) => {
-              image.loading = "eager";
-              await Promise.race([
-                image.decode().catch(() => undefined),
-                new Promise<void>((resolve) => window.setTimeout(resolve, 3000)),
-              ]);
-            }));
             target.scrollIntoView({
-              behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth",
+              behavior: "instant",
               block: "start",
             });
             return;
