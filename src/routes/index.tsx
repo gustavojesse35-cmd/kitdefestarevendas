@@ -57,9 +57,9 @@ function Index() {
     <>
       <div
         onClick={(e) => {
-          const el = (e.target as HTMLElement).closest("[data-offer], a[href='#oferta-premium']");
+          const el = (e.target as HTMLElement).closest("[data-offer], [data-scroll-planos], a[href='#oferta-premium']");
           if (!el) return;
-          if (el.getAttribute("href") === "#oferta-premium") {
+          if (el.hasAttribute("data-scroll-planos") || el.getAttribute("href") === "#oferta-premium") {
             e.preventDefault();
             const target = document.getElementById("planos");
             if (!target) return;
